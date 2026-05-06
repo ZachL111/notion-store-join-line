@@ -1,68 +1,40 @@
 # notion-store-join-line
 
-`notion-store-join-line` is a Swift project for Databases. It turns develop a Swift command-oriented project for join scenarios with safe and unsafe fixtures, remediation hints, and single-node deterministic mode into a small local model with readable fixtures and a direct verification command.
+`notion-store-join-line` explores databases with a small Swift codebase and local fixtures. The technical goal is to develop a Swift command-oriented project for join scenarios with safe and unsafe fixtures, remediation hints, and single-node deterministic mode.
 
-## Reading Notion Store Join Line
+## Use Case
 
-Start with the README, then open `metadata/project.json` to check the constants behind the examples. After that, `fixtures/cases.csv` shows the compact path and `examples/extended_cases.csv` gives a wider look at the same rule.
+I want this repository to be useful as a quick reading exercise: fixtures first, implementation second, verifier last.
 
-## Purpose
+## Notion Store Join Line Review Notes
 
-The repository exists to keep a technical idea small enough to reason about. The implementation avoids external dependencies where possible, then uses fixtures to make changes easy to review.
+For a quick review, compare `index fit` with `constraint risk` before reading the middle cases.
 
-## Fixture Notes
+## Highlights
 
-The extended cases are not random smoke tests. `degraded` keeps pressure on the review path, while `surge` shows the model when capacity and weight are strong enough to clear the threshold.
+- `fixtures/domain_review.csv` adds cases for index fit and join width.
+- `metadata/domain-review.json` records the same cases in structured form.
+- `config/review-profile.json` captures the read order and the two review questions.
+- `examples/notion-store-join-walkthrough.md` walks through the case spread.
+- The Swift code includes a review path for `index fit` and `constraint risk`.
+- `docs/field-notes.md` explains the strongest and weakest cases.
 
-## Design Sketch
+## Code Layout
 
-The interesting part is the boundary between accepted and reviewed scenarios. Extended examples sit near that boundary so future edits can show whether the model became more permissive or more cautious. The Swift project compiles a minimal command-line test harness against the local Windows SDK.
+The implementation keeps the scoring rule plain: reward signal and confidence, preserve slack, penalize drag, then classify the result into a review lane.
 
-## What It Does
+The added Swift path is deliberately direct, with fixtures doing most of the explaining.
 
-- Models schema shape with deterministic scoring and explicit review decisions.
-- Uses fixture data to keep query checks changes visible in code review.
-- Includes extended examples for fixture rows, including `surge` and `degraded`.
-- Documents constraint behavior tradeoffs in `docs/operations.md`.
-- Runs locally with a single verification command and no external credentials.
-
-## Usage
+## Run The Check
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts/verify.ps1
 ```
 
-This runs the language-level build or test path against the compact fixture set.
+## Regression Path
 
-## Verification
+That command is also the regression path. It verifies the domain cases and catches mismatches between the CSV, metadata, and code.
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File scripts/audit.ps1
-```
+## Future Work
 
-The audit command checks repository structure and README constraints before it delegates to the verifier.
-
-## Files Worth Reading
-
-- `src`: primary implementation
-- `tests`: verification harness
-- `fixtures`: compact golden scenarios
-- `examples`: expanded scenario set
-- `metadata`: project constants and verification metadata
-- `docs`: operations and extension notes
-- `scripts`: local verification and audit commands
-
-## Next Directions
-
-- Split the scoring constants into a typed configuration object and validate it before use.
-- Add a comparison mode that shows how decisions change when one signal is adjusted.
-- Add a loader for `examples/extended_cases.csv` and promote selected cases into the language test suite.
-- Add one more databases fixture that focuses on a malformed or borderline input.
-
-## Limits
-
-The examples cover useful edges, not every edge. A larger version would add malformed-input tests, richer reports, and deeper domain parsers.
-
-## Setup
-
-The only required setup is the local Swift toolchain. After cloning, stay in the repo root so fixture paths resolve correctly.
+This remains a local project with deterministic fixtures. It does not depend on credentials, hosted services, or live data. Future work should add richer malformed inputs before widening the public API.
